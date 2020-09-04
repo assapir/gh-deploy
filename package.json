@@ -1,0 +1,16 @@
+{
+  "name": "gh-deploy",
+  "version": "0.1.0",
+  "description": "Deploy using GitHub web hooks and deployments",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github",
+    "deployment",
+    "webhook"
+  ],
+  "author": "Assaf Sapir",
+  "license": "MIT"
+}
