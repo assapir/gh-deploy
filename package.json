@@ -4,7 +4,7 @@
   "description": "Deploy using GitHub web hooks and deployments",
   "main": "bin/run.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "tap --reporter=list --statements=93 --lines=93 --functions=100 --branches=50 && npm run lint",
     "lint": "standard --fix"
   },
   "keywords": [
@@ -15,9 +15,13 @@
   "author": "Assaf Sapir",
   "license": "MIT",
   "devDependencies": {
-    "standard": "^14.3.4"
+    "standard": "^14.3.4",
+    "standard-version": "^9.0.0",
+    "tap": "^14.10.8"
   },
   "dependencies": {
-    "fastify": "^3.3.0"
+    "fastify": "^3.3.0",
+    "nodegit": "^0.27.0",
+    "pino-pretty": "^4.2.0"
   }
 }
