@@ -2,7 +2,7 @@
 
 const Git = require('../lib/git')
 const { test } = require('tap')
-const fs = require('fs/promises')
+const fs = require('fs').promises
 
 test('Git.clone without repo throw error', async t => {
   t.rejects(async () => await Git.clone(),
