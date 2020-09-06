@@ -3,6 +3,8 @@
 const Git = require('../lib/git')
 const { test } = require('tap')
 const fs = require('fs').promises
+const util = require('util')
+const exec = util.promisify(require('child_process').exec)
 
 test('Git.clone without repo throw error', async t => {
   t.rejects(async () => await Git.clone(),
@@ -91,13 +93,5 @@ test('Git.open specified destinaiton with specific branch when in other branch',
 })
 
 const removeFolderIfExist = async (path = '/tmp/gh-deploy') => {
-  try {
-    if (await fs.stat(path)) {
-      await fs.rmdir(path, {
-        recursive: true
-      })
-    }
-  } catch {
-    // ignore that it doesn't exist
-  }
+  await exec(`rm -rf ${path}`)
 }
