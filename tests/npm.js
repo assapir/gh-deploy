@@ -4,7 +4,7 @@ const npm = require('../lib/npm')
 const { test, beforeEach } = require('tap')
 const Git = require('../lib/git')
 const removeFolderIfExist = require('./utils')
-const { stat } = require('fs/promises')
+const fs = require('fs').promises
 const { join, resolve } = require('path')
 
 beforeEach(async () => {
@@ -22,7 +22,7 @@ test('npm.install install node_modules to default location', async t => {
   })
 
   await npm.install()
-  t.resolves(async () => await stat(join(dest, 'node_modules')))
+  t.resolves(async () => await fs.stat(join(dest, 'node_modules')))
 })
 
 test('npm.install install node_modules to specified location', async t => {
@@ -35,5 +35,5 @@ test('npm.install install node_modules to specified location', async t => {
   })
 
   await npm.install({ path: dest })
-  t.resolves(async () => await stat(join(dest, 'node_modules')))
+  t.resolves(async () => await fs.stat(join(dest, 'node_modules')))
 })
