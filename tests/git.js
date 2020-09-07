@@ -1,10 +1,17 @@
 'use strict'
 
 const Git = require('../lib/git')
-const { test } = require('tap')
+const { test, afterEach } = require('tap')
 const fs = require('fs').promises
-const util = require('util')
-const exec = util.promisify(require('child_process').exec)
+const path = require('path')
+const os = require('os')
+const removeFolderIfExist = require('./utils')
+
+afterEach(async () => {
+  await removeFolderIfExist()
+  const dest = path.join(os.tmpdir(), 'not-that-again')
+  await removeFolderIfExist(dest)
+})
 
 test('Git.clone without repo throw error', async t => {
   t.rejects(async () => await Git.clone(),
@@ -18,18 +25,21 @@ test('Git.clone not from github throw error', async t => {
   'I can\'t do anything without a valid repository, that start with https://github.com/')
 })
 
-test('Git.clone clone the repo to default destinaiton and branch', async t => {
+test('Git.clone clone the repo to default destination and branch', async t => {
+  const dest = path.join(os.tmpdir(), 'gh-deploy')
   await removeFolderIfExist()
+
   const repo = await Git.clone({ repository: 'https://github.com/assapir/gh-deploy' })
   t.ok(repo, 'mmmm, repo object should have been created :thinking:')
   const branch = await repo.getCurrentBranch()
   t.equal(branch.name(), 'refs/heads/main')
-  const files = await fs.readdir('/tmp/gh-deploy')
+  const files = await fs.readdir(dest)
   t.ok(files.includes('.git'), 'where the heck you cloned it to?!')
 })
 
-test('Git.clone clone the repo to default destinaiton and specified branch', async t => {
+test('Git.clone clone the repo to default destination and specified branch', async t => {
   await removeFolderIfExist()
+
   const repo = await Git.clone({
     repository: 'https://github.com/assapir/gh-deploy',
     branch: 'ciBranch'
@@ -39,18 +49,19 @@ test('Git.clone clone the repo to default destinaiton and specified branch', asy
   t.equal(branch.name(), 'refs/heads/ciBranch')
 })
 
-test('Git.clone clone the repo to specified destinaiton and specified branch', async t => {
-  const path = '/tmp/not-that-again'
-  await removeFolderIfExist(path)
+test('Git.clone clone the repo to specified destination and specified branch', async t => {
+  const dest = path.join(os.tmpdir(), 'not-that-again')
+  await removeFolderIfExist(dest)
+
   const repo = await Git.clone({
     repository: 'https://github.com/assapir/gh-deploy',
     branch: 'ciBranch',
-    destination: path
+    destination: dest
   })
   t.ok(repo, 'mmmm, repo object should have been created :thinking:')
   const branch = await repo.getCurrentBranch()
   t.equal(branch.name(), 'refs/heads/ciBranch')
-  t.resolves(async () => await fs.readdir(path), 'this directory should have exist by now')
+  t.resolves(async () => await fs.readdir(dest), 'this directory should have exist by now')
 })
 
 test('Git.open without repoPath throws error', async t => {
@@ -58,40 +69,37 @@ test('Git.open without repoPath throws error', async t => {
     'I can\'t do anything without a repoPath')
 })
 
-test('Git.open specified destinaiton with default branch when already in that branch', async t => {
-  const path = '/tmp/not-that-again'
-  await removeFolderIfExist(path)
+test('Git.open specified destination with default branch when already in that branch', async t => {
+  const dest = path.join(os.tmpdir(), 'not-that-again')
+  await removeFolderIfExist(dest)
 
   let repo = await Git.clone({
     repository: 'https://github.com/assapir/gh-deploy',
-    destination: path
+    destination: dest
   })
 
   repo = await Git.open({
-    repoPath: path
+    repoPath: dest
   })
   t.ok(repo, 'mmmm, repo object should have been created :thinking:')
   const branch = await repo.getCurrentBranch()
   t.equal(branch.name(), 'refs/heads/main')
 })
 
-test('Git.open specified destinaiton with specific branch when in other branch', async t => {
-  const path = '/tmp/not-that-again'
-  await removeFolderIfExist()
+test('Git.open specified destination with specific branch when in other branch', async t => {
+  const dest = path.join(os.tmpdir(), 'not-that-again')
+  await removeFolderIfExist(dest)
 
   let repo = await Git.clone({
-    repository: 'https://github.com/assapir/gh-deploy'
+    repository: 'https://github.com/assapir/gh-deploy',
+    destination: dest
   })
 
   repo = await Git.open({
-    repoPath: path,
+    repoPath: dest,
     branch: 'ciBranch'
   })
   t.ok(repo, 'mmmm, repo object should have been created :thinking:')
   const branch = await repo.getCurrentBranch()
   t.equal(branch.name(), 'refs/heads/ciBranch')
 })
-
-const removeFolderIfExist = async (path = '/tmp/gh-deploy') => {
-  await exec(`rm -rf ${path}`)
-}

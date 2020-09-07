@@ -4,11 +4,11 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Tap",
+            "name": "tap file",
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${relativeFile}",
+            "program": "${workspaceFolder}/${relativeFile}",
             "outputCapture": "std"
         }
     ]

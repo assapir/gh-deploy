@@ -24,6 +24,7 @@
     "tap": "^14.10.8"
   },
   "dependencies": {
+    "@npmcli/arborist": "0.0.21",
     "fastify": "^3.3.0",
     "nodegit": "^0.27.0",
     "octokit": "^1.0.0-hello-world",
