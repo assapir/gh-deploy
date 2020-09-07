@@ -4,7 +4,7 @@
   "description": "Deploy using GitHub web hooks and deployments",
   "main": "bin/run.js",
   "scripts": {
-    "test": "tap --reporter=list --statements=95 --lines=95 --functions=100 --branches=87 tests/** && npm run lint",
+    "test": "tap --reporter=list --statements=96 --lines=96 --functions=100 --branches=90 tests/** -R nyan && npm run lint",
     "lint": "standard --fix"
   },
   "keywords": [
