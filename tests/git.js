@@ -27,7 +27,7 @@ test('Git.clone not from github throw error', async t => {
 
 test('Git.clone clone the repo to default destination and branch', async t => {
   const dest = path.join(os.tmpdir(), 'gh-deploy')
-  await removeFolderIfExist()
+  await removeFolderIfExist(dest)
 
   const repo = await Git.clone({ repository: 'https://github.com/assapir/gh-deploy' })
   t.ok(repo, 'mmmm, repo object should have been created :thinking:')
@@ -102,4 +102,29 @@ test('Git.open specified destination with specific branch when in other branch',
   t.ok(repo, 'mmmm, repo object should have been created :thinking:')
   const branch = await repo.getCurrentBranch()
   t.equal(branch.name(), 'refs/heads/ciBranch')
+})
+
+test('Git.checkout fail without repoObj', async t => {
+  t.rejects(async () => await Git.checkout({ hash: 'ab81f28a' }),
+    'how do you expect me to know what to do? repoObj should be come from "open" or "clone"')
+})
+
+test('Git.checkout fail without hash', async t => {
+  const dest = path.join(os.tmpdir(), 'gh-deploy')
+  await removeFolderIfExist(dest)
+
+  const repo = await Git.clone({ repository: 'https://github.com/assapir/gh-deploy' })
+  t.rejects(async () => await Git.checkout({ repoObj: repo }),
+    'how do you expect me to know what to do? repoObj should be come from "open" or "clone"')
+  await removeFolderIfExist(dest)
+})
+
+test('Git.checkout go to specific commit', async t => {
+  const dest = path.join(os.tmpdir(), 'gh-deploy')
+  await removeFolderIfExist(dest)
+
+  const repo = await Git.clone({ repository: 'https://github.com/assapir/gh-deploy' })
+  await Git.checkout({ repoObj: repo, hash: 'ab81f28a' })
+  t.resolves(async () => await fs.stat(path.join(dest, 'rightCommit!')))
+  await removeFolderIfExist(dest)
 })
