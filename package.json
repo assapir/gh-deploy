@@ -4,7 +4,7 @@
   "description": "Deploy using GitHub web hooks and deployments",
   "main": "bin/run.js",
   "scripts": {
-    "test": "tap --reporter=list --statements=96 --lines=96 --functions=100 --branches=90 tests/** && npm run lint",
+    "test": "tap --reporter=list --statements=97 --lines=97 --functions=100 --branches=90 tests/** && npm run lint",
     "lint": "standard --fix"
   },
   "keywords": [
@@ -19,15 +19,15 @@
     "url": "https://github.com/assapir/gh-deploy"
   },
   "devDependencies": {
+    "nock": "^13.0.4",
     "standard": "^14.3.4",
     "standard-version": "^9.0.0",
     "tap": "^14.10.8"
   },
   "dependencies": {
-    "@npmcli/arborist": "0.0.21",
+    "@npmcli/arborist": "^0.0.21",
+    "@octokit/rest": "^18.0.5",
     "fastify": "^3.3.0",
-    "nodegit": "^0.27.0",
-    "octokit": "^1.0.0-hello-world",
-    "pino-pretty": "^4.2.0"
+    "nodegit": "^0.27.0"
   }
 }
